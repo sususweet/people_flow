@@ -1,4 +1,4 @@
-function [plaza]=dist_people(plaza, Ks)
+function [plaza,v]=dist_people(plaza, v, Ks)
     conf = config();
 	[L,W]=size(plaza);
     index = find(plaza == conf.TYPE_PEOPLE_FAMILIAR);
@@ -11,7 +11,8 @@ function [plaza]=dist_people(plaza, Ks)
 
     for i=1:size(index_i,1)
         if rand<=Ks
-            plaza(index_i(i), index_j(i)) = conf.TYPE_PEOPLE_FAMILIAR;
+            plaza(index_i(i), index_j(i)) = conf.TYPE_PEOPLE_UNFAMILIAR_4;
+            v(index_i(i), index_j(i)) = conf.MOVE_RIGHT;
         else
             rand_num = rand;
 %             if rand_num<=0.25
@@ -25,6 +26,7 @@ function [plaza]=dist_people(plaza, Ks)
 %                 people_unfami_num_3 = people_unfami_num_3 + 1;
 %             else
                 plaza(index_i(i), index_j(i)) = conf.TYPE_PEOPLE_UNFAMILIAR_4;
+                v(index_i(i), index_j(i)) = conf.MOVE_RIGHT;
                 people_unfami_num_4 = people_unfami_num_4 + 1;
 %             end
         end

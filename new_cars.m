@@ -9,6 +9,7 @@ function [plaza,v,vmax]=new_cars(plaza,v,probc)
             if(rand<=probc) %在该位置随机产生一个车子
                 tmp=rand;
                 plaza(i,lanes)=conf.TYPE_PEOPLE_FAMILIAR;
+                v(i,lanes)=conf.MOVE_STOP;
 %                 for k=1:length(probv)   %随机生成一个车子应该有的最大车速
 %                     if(tmp<=probv(k))
 %                         vmax(i,lanes)=VTypes(k);%判断属于哪个挡的车速并赋值
@@ -21,6 +22,7 @@ function [plaza,v,vmax]=new_cars(plaza,v,probc)
     end
     %如果生成的车辆密度小于probc
     needn=ceil((W-2)*(L-2)*probc);
+    %  needn = 2;
     number=size(find(vmax~=0),1);
     if(number<needn)%如果密度小于预期
         while(number~=needn)
@@ -28,6 +30,7 @@ function [plaza,v,vmax]=new_cars(plaza,v,probc)
             lanes=floor(rand*(W-2))+2;
             if(plaza(i,lanes)==conf.TYPE_PEOPLE_EMPTY)
                 plaza(i,lanes)=conf.TYPE_PEOPLE_FAMILIAR;
+                v(i,lanes)=conf.MOVE_STOP;
 %                 for k=1:length(probv)   %随机生成一个车子应该有的最大车速
 %                    if(tmp<=probv(k))
 %                        vmax(i,lanes)=VTypes(k);%判断属于哪个挡的车速并赋值
@@ -45,8 +48,8 @@ function [plaza,v,vmax]=new_cars(plaza,v,probc)
         for k=1:number-needn
             i=temp(k);
             plaza(i)=conf.TYPE_PEOPLE_EMPTY;
-            vmax(i)=0;
-            v(i)=0;
+            % vmax(i)=0;
+            v(i,lanes)=conf.MOVE_STOP;
         end
     end
 end
