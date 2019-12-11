@@ -43,7 +43,3 @@ for t=1:iterations
     %     [plaza,v,vmax]=random_slow(plaza,v,vmax,prospace_wslow);%随机慢化
     %     [plaza,v,vmax]=move_forward(plaza,v,vmax);%更新各元胞状态，车流向前行驶，一个周期结束
 end
-
-
-
-

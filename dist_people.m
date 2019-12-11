@@ -11,13 +11,13 @@ function [plaza,v]=dist_people(plaza, v, Ks)
 
     for i=1:size(index_i,1)
         if rand<=Ks
-            plaza(index_i(i), index_j(i)) = conf.TYPE_PEOPLE_UNFAMILIAR_4;
-            v(index_i(i), index_j(i)) = conf.MOVE_RIGHT;
+            plaza(index_i(i), index_j(i)) = conf.TYPE_PEOPLE_FAMILIAR;
+            % v(index_i(i), index_j(i)) = conf.MOVE_RIGHT;
         else
             rand_num = rand;
+            v(index_i(i), index_j(i)) = conf.MOVE_RIGHT;
              if rand_num<=0.25
                 plaza(index_i(i), index_j(i)) = conf.TYPE_PEOPLE_UNFAMILIAR_1;
-                v(index_i(i), index_j(i)) = conf.MOVE_RIGHT;
                 people_unfami_num_1 = people_unfami_num_1 + 1;
             elseif rand_num <= 0.5
                 plaza(index_i(i), index_j(i)) = conf.TYPE_PEOPLE_UNFAMILIAR_2;
@@ -27,7 +27,6 @@ function [plaza,v]=dist_people(plaza, v, Ks)
                 people_unfami_num_3 = people_unfami_num_3 + 1;
             else
                 plaza(index_i(i), index_j(i)) = conf.TYPE_PEOPLE_UNFAMILIAR_4;
-                v(index_i(i), index_j(i)) = conf.MOVE_RIGHT;
                 people_unfami_num_4 = people_unfami_num_4 + 1;
             end
         end
