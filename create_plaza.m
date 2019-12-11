@@ -10,5 +10,5 @@ function [plaza,v,follow]=create_plaza(width,height,exit_width)
     plaza([1,height+2],1:width+2)=conf.TYPE_BARRIAR;   % 上下墙壁
 
     % 空间出口位置
-    plaza((height+2) / 2 - exit_width / 2:(height+2) / 2 + exit_width / 2, [1])=conf.TYPE_PEOPLE_EMPTY;    % 左出口
+    plaza((height+2) / 2 - exit_width / 2:(height+2) / 2 + exit_width / 2, 1)=conf.TYPE_PEOPLE_EMPTY;    % 左出口
 end

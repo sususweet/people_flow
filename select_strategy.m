@@ -1,4 +1,4 @@
-function [plaza, v, position_x_target, position_y_target] = select_strategy(plaza, v, follow, position_x, position_y)
+function [plaza, v, follow, position_x_target, position_y_target] = select_strategy(plaza, v, follow, position_x, position_y)
 % 根据不同策略，选择下一步的移动方向
 conf = config();
 [L,W]=size(plaza);
@@ -82,7 +82,7 @@ if people == conf.TYPE_PEOPLE_UNFAMILIAR_1 && size(insight_arr, 1) ~= 0 % 视野中
 end
 
 % 不熟悉环境行人的策略S2
-if people == conf.TYPE_PEOPLE_UNFAMILIAR_2
+if people == conf.TYPE_PEOPLE_UNFAMILIAR_2 && size(insight_arr, 1) ~= 0
     count_LU = 0;   % 左上角
     count_LD = 0;   % 左下角
     count_RU = 0;   % 右上角
@@ -173,8 +173,8 @@ if people == conf.TYPE_PEOPLE_UNFAMILIAR_2
 end
 
 % 不熟悉环境行人的策略S3
-if people == conf.TYPE_PEOPLE_UNFAMILIAR_3
-	count_LU = 0;   % 左上角
+if people == conf.TYPE_PEOPLE_UNFAMILIAR_3 && size(insight_arr, 1) ~= 0
+    count_LU = 0;   % 左上角
     count_LD = 0;   % 左下角
     count_RU = 0;   % 右上角
     count_RD = 0;   % 右下角
@@ -239,8 +239,10 @@ if people == conf.TYPE_PEOPLE_UNFAMILIAR_3
     
 end
 
-% 不熟悉环境行人的策略S4
-if people == conf.TYPE_PEOPLE_UNFAMILIAR_4 || (people == conf.TYPE_PEOPLE_UNFAMILIAR_1 && size(insight_arr, 1) == 0) % 视野中没有人
+% 不熟悉环境行人的策略S4，当采用S1、S2、S3策略的人视野范围内没人时，也采用此策略
+if people == conf.TYPE_PEOPLE_UNFAMILIAR_4 || (people == conf.TYPE_PEOPLE_UNFAMILIAR_1 && size(insight_arr, 1) == 0) ...
+    || (people == conf.TYPE_PEOPLE_UNFAMILIAR_2 && size(insight_arr, 1) == 0) ...
+    || (people == conf.TYPE_PEOPLE_UNFAMILIAR_3 && size(insight_arr, 1) == 0)	% 视野中没有人
     near_barrier = 0;
     i=0;
     j=0;

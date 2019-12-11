@@ -11,13 +11,15 @@ people_num = size(index,1);
 for i = 1:people_num
     y_ori = index_i(i);
     x_ori = index_j(i);
-    [plaza, v, x_target, y_target] = select_strategy(plaza, v, follow, x_ori, y_ori);
+    [plaza, v, follow, x_target, y_target] = select_strategy(plaza, v, follow, x_ori, y_ori);
     % 执行移动操作
     if y_ori ~= y_target || x_ori ~= x_target
         plaza(y_ori, x_ori) = conf.TYPE_PEOPLE_EMPTY;
         plaza(y_target, x_target) = conf.TYPE_PEOPLE_UNFAMILIAR_4;
         v(y_target, x_target) = v(y_ori, x_ori);
         v(y_ori, x_ori) = conf.MOVE_NULL;
+        follow{y_target, x_target} = follow{y_ori, x_ori};
+        follow{y_ori, x_ori} = [];
     end
 end
 
@@ -28,13 +30,15 @@ people_num = size(index,1);
 for i = 1:people_num
     y_ori = index_i(i);
     x_ori = index_j(i);
-    [plaza, v, x_target, y_target] = select_strategy(plaza, v, follow, x_ori, y_ori);
+    [plaza, v, follow, x_target, y_target] = select_strategy(plaza, v, follow, x_ori, y_ori);
     % 执行移动操作
     if y_ori ~= y_target || x_ori ~= x_target
         plaza(y_ori, x_ori) = conf.TYPE_PEOPLE_EMPTY;
         plaza(y_target, x_target) = conf.TYPE_PEOPLE_UNFAMILIAR_1;
         v(y_target, x_target) = v(y_ori, x_ori);
         v(y_ori, x_ori) = conf.MOVE_NULL;
+        follow{y_target, x_target} = follow{y_ori, x_ori};
+        follow{y_ori, x_ori} = [];
     end
 end
 
@@ -45,13 +49,15 @@ people_num = size(index,1);
 for i = 1:people_num
     y_ori = index_i(i);
     x_ori = index_j(i);
-    [plaza, v, x_target, y_target] = select_strategy(plaza, v, follow, x_ori, y_ori);
+    [plaza, v, follow, x_target, y_target] = select_strategy(plaza, v, follow, x_ori, y_ori);
     % 执行移动操作
     if y_ori ~= y_target || x_ori ~= x_target
         plaza(y_ori, x_ori) = conf.TYPE_PEOPLE_EMPTY;
         plaza(y_target, x_target) = conf.TYPE_PEOPLE_UNFAMILIAR_2;
         v(y_target, x_target) = v(y_ori, x_ori);
         v(y_ori, x_ori) = conf.MOVE_NULL;
+        follow{y_target, x_target} = follow{y_ori, x_ori};
+        follow{y_ori, x_ori} = [];
     end
 end
 
@@ -62,13 +68,15 @@ people_num = size(index,1);
 for i = 1:people_num
     y_ori = index_i(i);
     x_ori = index_j(i);
-    [plaza, v, x_target, y_target] = select_strategy(plaza, v, follow, x_ori, y_ori);
+    [plaza, v, follow, x_target, y_target] = select_strategy(plaza, v, follow, x_ori, y_ori);
     % 执行移动操作
     if y_ori ~= y_target || x_ori ~= x_target
         plaza(y_ori, x_ori) = conf.TYPE_PEOPLE_EMPTY;
         plaza(y_target, x_target) = conf.TYPE_PEOPLE_UNFAMILIAR_3;
         v(y_target, x_target) = v(y_ori, x_ori);
         v(y_ori, x_ori) = conf.MOVE_NULL;
+        follow{y_target, x_target} = follow{y_ori, x_ori};
+        follow{y_ori, x_ori} = [];
     end
 end
 end
