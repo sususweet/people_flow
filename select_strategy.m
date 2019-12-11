@@ -294,7 +294,7 @@ if people == conf.TYPE_PEOPLE_UNFAMILIAR_4 || (people == conf.TYPE_PEOPLE_UNFAMI
                 end
             end
         end
-        if has_blocked == 1
+        if has_blocked >= 1
             % v(position_y, position_x) = unidrnd(conf.MOVE_RIGHTDOWN);  
             v(position_y, position_x) = unidrnd(conf.MOVE_DOWN); 
         end
@@ -303,8 +303,12 @@ if people == conf.TYPE_PEOPLE_UNFAMILIAR_4 || (people == conf.TYPE_PEOPLE_UNFAMI
         if plaza(position_y_target, position_x_target) == conf.TYPE_PEOPLE_EMPTY
             v=v_tmp;
             break;
+        elseif has_blocked>7
+            position_y_target = position_y;
+            position_x_target = position_x;
+            break;
         else
-            has_blocked = 1;
+            has_blocked = has_blocked + 1;
         end
     end
 end
