@@ -6,13 +6,12 @@ conf = config();
 
 space_w = 25; % 空间的宽度
 space_h = 25; % 空间的长度
-exit_w = 5; % 出口的宽度
 Ks = 0.1;   % 熟悉环境的行人比例
 
 h = NaN;  % 图像的句柄
 per_show_time = 0.3;    %单次展示时间
 
-iterations=100;    % 迭代次数
+iterations=400;    % 迭代次数
 prospace_wc=0.01;          % 车辆的密度
 % prospace_wv=[0.1 1];      % 两种车流的密度分布
 prospace_wslow=0.3;       % 随机慢化的概率
@@ -20,7 +19,7 @@ Dsafe=1;            % 表示换道时车至少与后面车距离多少个单位才算安全
 % VTypes=[1,2];       %道路上一共有几种最大速度不同的车辆,速度是什么
 
 %生成疏散空间
-[plaza,v,follow] = create_plaza(space_w,space_h,exit_w);
+[plaza,v,follow] = create_plaza(space_w,space_h);
 % h = show_plaza(plaza,h,per_show_time);
 [plaza,v,vmax]=new_cars(plaza,v,prospace_wc);
 [plaza,v] = dist_people(plaza,v,Ks);

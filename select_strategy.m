@@ -1,13 +1,40 @@
-function [plaza, v, follow, position_x_target, position_y_target] = select_strategy(plaza, v, follow, position_x, position_y)
+function [plaza, v, follow, has_exit, position_x_target, position_y_target] = select_strategy(plaza, v, follow, position_x, position_y)
 % 根据不同策略，选择下一步的移动方向
 conf = config();
 [L,W]=size(plaza);
+has_exit = 0;
 people = plaza(position_y, position_x);
 ori_v = v(position_y, position_x);
 position_x_target = position_x;
 position_y_target = position_y;
 
 insight_arr = get_insight(plaza, v, position_x, position_y);
+
+% 静态场域策略 S0
+exit_x = conf.exit_xy(1);
+exit_y = conf.exit_xy(2);
+exit_distance = sqrt((position_y - exit_y)^2+(position_x - exit_x)^2);
+if exit_distance <= conf.sight_r
+    % 找到这个人周围8个邻域内距离出口最近的邻域，按照距离大小，选取没人的邻域进入
+    [distance_mat] = get_distance_move(position_x, position_y, exit_x, exit_y);
+    for i = 1:size(distance_mat,1)
+        move_x = distance_mat(i,2);
+        move_y = distance_mat(i,3);
+        if ~(move_x == 0 && move_y == 0)
+            position_x_target = position_x + move_x;
+            position_y_target = position_y + move_y;
+
+            if plaza(position_y_target, position_x_target) == conf.TYPE_EXIT
+                has_exit = 1;
+                break;
+            elseif plaza(position_y_target, position_x_target) == conf.TYPE_PEOPLE_EMPTY
+                break;
+            end
+        end
+    end
+    return;
+end
+
 
 % 不熟悉环境行人的策略S1
 if people == conf.TYPE_PEOPLE_UNFAMILIAR_1 && size(insight_arr, 1) ~= 0 % 视野中有人
@@ -295,8 +322,8 @@ if people == conf.TYPE_PEOPLE_UNFAMILIAR_4 || (people == conf.TYPE_PEOPLE_UNFAMI
             end
         end
         if has_blocked >= 1
-            % v(position_y, position_x) = unidrnd(conf.MOVE_RIGHTDOWN);  
-            v(position_y, position_x) = unidrnd(conf.MOVE_DOWN); 
+            % v(position_y, position_x) = unidrnd(conf.MOVE_RIGHTDOWN);
+            v(position_y, position_x) = unidrnd(conf.MOVE_DOWN);
         end
         ori_v = v(position_y, position_x);
         [v_tmp, position_x_target, position_y_target] = proceed_move(ori_v, v, position_x, position_y);
