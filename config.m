@@ -17,4 +17,8 @@ function cn = config()
     cn.MOVE_RIGHTUP = 6;
     cn.MOVE_LEFTDOWN = 7;
     cn.MOVE_RIGHTDOWN = 8;
+    
+    % 元胞实际大小，一个元胞为 cell_size*cell_size m^2 实际大小
+    cn.cell_size = 0.4;
+    cn.sight_r = 1.6/cn.cell_size;  % 行人的视野半径
 end

@@ -15,20 +15,21 @@ function [plaza,v]=dist_people(plaza, v, Ks)
             v(index_i(i), index_j(i)) = conf.MOVE_RIGHT;
         else
             rand_num = rand;
-%             if rand_num<=0.25
-%                 plaza(index_i(i), index_j(i)) = conf.TYPE_PEOPLE_UNFAMILIAR_1;
-%                 people_unfami_num_1 = people_unfami_num_1 + 1;
-%             elseif rand_num <= 0.5
-%                 plaza(index_i(i), index_j(i)) = conf.TYPE_PEOPLE_UNFAMILIAR_2;
-%                 people_unfami_num_2 = people_unfami_num_2 + 1;
-%             elseif rand_num <= 0.75
-%                 plaza(index_i(i), index_j(i)) = conf.TYPE_PEOPLE_UNFAMILIAR_3;
-%                 people_unfami_num_3 = people_unfami_num_3 + 1;
-%             else
+             if rand_num<=0.25
+                plaza(index_i(i), index_j(i)) = conf.TYPE_PEOPLE_UNFAMILIAR_1;
+                v(index_i(i), index_j(i)) = conf.MOVE_RIGHT;
+                people_unfami_num_1 = people_unfami_num_1 + 1;
+            elseif rand_num <= 0.5
+                plaza(index_i(i), index_j(i)) = conf.TYPE_PEOPLE_UNFAMILIAR_2;
+                people_unfami_num_2 = people_unfami_num_2 + 1;
+            elseif rand_num <= 0.75
+                plaza(index_i(i), index_j(i)) = conf.TYPE_PEOPLE_UNFAMILIAR_3;
+                people_unfami_num_3 = people_unfami_num_3 + 1;
+            else
                 plaza(index_i(i), index_j(i)) = conf.TYPE_PEOPLE_UNFAMILIAR_4;
                 v(index_i(i), index_j(i)) = conf.MOVE_RIGHT;
                 people_unfami_num_4 = people_unfami_num_4 + 1;
-%             end
+            end
         end
     end
 end
