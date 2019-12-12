@@ -1,5 +1,6 @@
 %可视化
 function h = show_plaza(plaza, h, n)
+    conf = config();
     [L,W]=size(plaza); 
     temp=plaza;
     temp(temp==1)=0;    %清空所有的人员
@@ -17,7 +18,8 @@ function h = show_plaza(plaza, h, n)
         set(h,'CData',PLAZA);
     else    %调整展示图像大小和格式
         %figure('position',[200 50 200 700]);
-        h=imagesc(PLAZA);
+        clims = [conf.TYPE_BARRIAR conf.TYPE_PEOPLE_FAMILIAR];
+        h=imagesc(PLAZA, clims);
         colorbar;
         hold on;
         plot([[0:W]',[0:W]']+0.5,[0,L]+0.5,'k');

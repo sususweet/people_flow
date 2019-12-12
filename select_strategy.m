@@ -1,18 +1,200 @@
 function [plaza, v, follow, has_exit, position_x_target, position_y_target] = select_strategy(plaza, v, follow, position_x, position_y)
 % 根据不同策略，选择下一步的移动方向
 conf = config();
-[L,W]=size(plaza);
+[y_max, x_max]=size(plaza);
 has_exit = 0;
 people = plaza(position_y, position_x);
 ori_v = v(position_y, position_x);
 position_x_target = position_x;
 position_y_target = position_y;
-
-insight_arr = get_insight(plaza, v, position_x, position_y);
-
-% 静态场域策略 S0
 exit_x = conf.exit_xy(1);
 exit_y = conf.exit_xy(2);
+insight_arr = get_insight(plaza, v, position_x, position_y);
+
+index = find(plaza ~= conf.TYPE_PEOPLE_EMPTY & plaza ~= conf.TYPE_BARRIAR & plaza ~= conf.TYPE_EXIT);
+[index_i, ~]=ind2sub(size(plaza),index);
+people_num = size(index_i,1);
+
+% 熟悉环境行人的策略
+if people == conf.TYPE_PEOPLE_FAMILIAR
+    cost_mat = [];
+
+    for i_k = -1:1
+        for j_k = -1:1
+            if i_k == 0 && j_k == 0
+                continue;
+            end
+
+            position_x_tmp = position_x + i_k;
+            position_y_tmp = position_y + j_k;
+
+            people_insight = get_insight_by_direction(insight_arr, position_x_tmp, position_y_tmp);
+
+            count_LU = size(people_insight.people_LU, 1);   % 左上角
+            count_LD = size(people_insight.people_LD, 1);   % 左下角
+            count_RU = size(people_insight.people_RU, 1);   % 右上角
+            count_RD = size(people_insight.people_RD, 1);   % 右下角
+            count_U = size(people_insight.people_U, 1); % 上面45°扇形区域
+            count_D = size(people_insight.people_D, 1); % 下面45°扇形区域
+            count_L = size(people_insight.people_L, 1); % 左面45°扇形区域
+            count_R = size(people_insight.people_R, 1); % 右面45°扇形区域
+        
+            % 当前行人运动方向的左右90°扇形区间, 在此视野范围内, 影响该行人运动的干扰
+            Nlr = 0;
+            % 90°视野范围内的总人数
+            Np = 0;
+            switch v(position_y_tmp, position_x_tmp)
+                case conf.MOVE_LEFTUP
+                    for i = 1:count_L
+                        insight_x = people_insight.people_L(i,1);
+                        insight_y = people_insight.people_L(i,2);
+                        Np = Np + 1;
+                        Nlr = Nlr + is_move_conflict(v(position_y_tmp, position_x_tmp), v(insight_y, insight_x), conf.DIRECTION_LEFT);
+                    end
+                    for i = 1:count_U
+                        insight_x = people_insight.people_U(i,1);
+                        insight_y = people_insight.people_U(i,2);
+                        Np = Np + 1;
+                        Nlr = Nlr + is_move_conflict(v(position_y_tmp, position_x_tmp), v(insight_y, insight_x), conf.DIRECTION_RIGHT);
+                    end
+        
+                case conf.MOVE_LEFTDOWN
+                    for i = 1:count_L
+                        insight_x = people_insight.people_L(i,1);
+                        insight_y = people_insight.people_L(i,2);
+                        Np = Np + 1;
+                        Nlr = Nlr + is_move_conflict(v(position_y_tmp, position_x_tmp), v(insight_y, insight_x), conf.DIRECTION_RIGHT);
+                    end
+                    for i = 1:count_D
+                        insight_x = people_insight.people_D(i,1);
+                        insight_y = people_insight.people_D(i,2);
+                        Np = Np + 1;
+                        Nlr = Nlr + is_move_conflict(v(position_y_tmp, position_x_tmp), v(insight_y, insight_x), conf.DIRECTION_LEFT);
+                    end
+                case conf.MOVE_RIGHTUP
+                    for i = 1:count_R
+                        insight_x = people_insight.people_R(i,1);
+                        insight_y = people_insight.people_R(i,2);
+                        Np = Np + 1;
+                        Nlr = Nlr + is_move_conflict(v(position_y_tmp, position_x_tmp), v(insight_y, insight_x), conf.DIRECTION_RIGHT);
+                    end
+                    for i = 1:count_U
+                        insight_x = people_insight.people_U(i,1);
+                        insight_y = people_insight.people_U(i,2);
+                        Np = Np + 1;
+                        Nlr = Nlr + is_move_conflict(v(position_y_tmp, position_x_tmp), v(insight_y, insight_x), conf.DIRECTION_LEFT);
+                    end
+                case conf.MOVE_RIGHTDOWN
+                    for i = 1:count_R
+                        insight_x = people_insight.people_R(i,1);
+                        insight_y = people_insight.people_R(i,2);
+                        Np = Np + 1;
+                        Nlr = Nlr + is_move_conflict(v(position_y_tmp, position_x_tmp), v(insight_y, insight_x), conf.DIRECTION_LEFT);
+                    end
+                    for i = 1:count_D
+                        insight_x = people_insight.people_D(i,1);
+                        insight_y = people_insight.people_D(i,2);
+                        Np = Np + 1;
+                        Nlr = Nlr + is_move_conflict(v(position_y_tmp, position_x_tmp), v(insight_y, insight_x), conf.DIRECTION_RIGHT);
+                    end
+        
+                case conf.MOVE_UP
+                    for i = 1:count_LU
+                        insight_x = people_insight.people_LU(i,1);
+                        insight_y = people_insight.people_LU(i,2);
+                        Np = Np + 1;
+                        Nlr = Nlr + is_move_conflict(v(position_y_tmp, position_x_tmp), v(insight_y, insight_x), conf.DIRECTION_LEFT);
+                    end
+                    for i = 1:count_RU
+                        insight_x = people_insight.people_RU(i,1);
+                        insight_y = people_insight.people_RU(i,2);
+                        Np = Np + 1;
+                        Nlr = Nlr + is_move_conflict(v(position_y_tmp, position_x_tmp), v(insight_y, insight_x), conf.DIRECTION_RIGHT);
+                    end
+                case conf.MOVE_DOWN
+                    for i = 1:count_RD
+                        insight_x = people_insight.people_RD(i,1);
+                        insight_y = people_insight.people_RD(i,2);
+                        Np = Np + 1;
+                        Nlr = Nlr + is_move_conflict(v(position_y_tmp, position_x_tmp), v(insight_y, insight_x), conf.DIRECTION_LEFT);
+                    end
+                    for i = 1:count_LD
+                        insight_x = people_insight.people_LD(i,1);
+                        insight_y = people_insight.people_LD(i,2);
+                        Np = Np + 1;
+                        Nlr = Nlr + is_move_conflict(v(position_y_tmp, position_x_tmp), v(insight_y, insight_x), conf.DIRECTION_RIGHT);
+                    end
+        
+                case conf.MOVE_LEFT
+                    for i = 1:count_LU
+                        insight_x = people_insight.people_LU(i,1);
+                        insight_y = people_insight.people_LU(i,2);
+                        Np = Np + 1;
+                        Nlr = Nlr + is_move_conflict(v(position_y_tmp, position_x_tmp), v(insight_y, insight_x), conf.DIRECTION_RIGHT);
+                    end
+                    for i = 1:count_LD
+                        insight_x = people_insight.people_LD(i,1);
+                        insight_y = people_insight.people_LD(i,2);
+                        Np = Np + 1;
+                        Nlr = Nlr + is_move_conflict(v(position_y_tmp, position_x_tmp), v(insight_y, insight_x), conf.DIRECTION_LEFT);
+                    end
+                case conf.MOVE_RIGHT
+                    for i = 1:count_RU
+                        insight_x = people_insight.people_RU(i,1);
+                        insight_y = people_insight.people_RU(i,2);
+                        Np = Np + 1;
+                        Nlr = Nlr + is_move_conflict(v(position_y_tmp, position_x_tmp), v(insight_y, insight_x), conf.DIRECTION_LEFT);
+                    end
+                    for i = 1:count_RD
+                        insight_x = people_insight.people_RD(i,1);
+                        insight_y = people_insight.people_RD(i,2);
+                        Np = Np + 1;
+                        Nlr = Nlr + is_move_conflict(v(position_y_tmp, position_x_tmp), v(insight_y, insight_x), conf.DIRECTION_RIGHT);
+                    end
+            end
+        
+            yita = Nlr / people_num;
+        
+            % 视野范围内的总人数
+            Na = size(insight_arr, 1);
+            % 视野半径为1 m 时, r = 3, 半径大于等于2 m 时, 认为r = 5
+            if conf.sight_r * conf.cell_size < 2.0
+                r = 3;
+            else
+                r = 5;
+            end
+            p = Na / r^2;
+        
+            cost_value = 0.075 * yita ^ 2 + 0.025 * p ^ 2;
+            fai_value = (abs(position_y_tmp - exit_y) + abs(position_x_tmp - exit_x)) * cost_value;
+
+            cost_mat = [cost_mat; fai_value i_k j_k];
+        end
+    end
+    cost_mat = sortrows(cost_mat, 1);
+    for i = 1:size(cost_mat,1)
+        move_x = cost_mat(i,2);
+        move_y = cost_mat(i,3);
+        if ~(move_x == 0 && move_y == 0)
+            position_x_target = position_x + move_x;
+            position_y_target = position_y + move_y;
+
+            if plaza(position_y_target, position_x_target) == conf.TYPE_EXIT
+                has_exit = 1;
+                break;
+            elseif plaza(position_y_target, position_x_target) == conf.TYPE_PEOPLE_EMPTY
+                break;
+            else
+                position_x_target = position_x;
+                position_y_target = position_y;
+            end
+        end
+    end
+    return;
+end
+
+
+% 静态场域策略 S0
 exit_distance = sqrt((position_y - exit_y)^2+(position_x - exit_x)^2);
 if exit_distance <= conf.sight_r
     % 找到这个人周围8个邻域内距离出口最近的邻域，按照距离大小，选取没人的邻域进入
@@ -29,6 +211,9 @@ if exit_distance <= conf.sight_r
                 break;
             elseif plaza(position_y_target, position_x_target) == conf.TYPE_PEOPLE_EMPTY
                 break;
+            else
+                position_x_target = position_x;
+                position_y_target = position_y;
             end
         end
     end
@@ -75,6 +260,9 @@ if people == conf.TYPE_PEOPLE_UNFAMILIAR_1 && size(insight_arr, 1) ~= 0 % 视野中
             position_y_target = position_y + move_y;
             if plaza(position_y_target, position_x_target) == conf.TYPE_PEOPLE_EMPTY
                 break;
+            else
+                position_x_target = position_x;
+                position_y_target = position_y;
             end
         end
     end
@@ -117,62 +305,17 @@ end
 
 % 不熟悉环境行人的策略S2
 if people == conf.TYPE_PEOPLE_UNFAMILIAR_2 && size(insight_arr, 1) ~= 0
-    count_LU = 0;   % 左上角
-    count_LD = 0;   % 左下角
-    count_RU = 0;   % 右上角
-    count_RD = 0;   % 右下角
-    count_U = 0;    % 上面45°扇形区域
-    count_D = 0;    % 下面45°扇形区域
-    count_L = 0;    % 左面45°扇形区域
-    count_R = 0;    % 右面45°扇形区域
-    for i=1:size(insight_arr, 1)
-        insight_y = insight_arr(i,1);
-        insight_x = insight_arr(i,2);
-        diff_y = abs(insight_y - position_y);
-        diff_x = abs(insight_x - position_x);
-        % 计算右下、左下、右上、左上四个扇形区域内的人员数目，包括边界
-        if insight_y >= position_y
-            if insight_x >= position_x
-                count_RD = count_RD + 1;
-                if diff_x >= diff_y
-                    count_R = count_R + 1;
-                end
-                if diff_x <= diff_y
-                    count_D = count_D + 1;
-                end
-            end
-            if insight_x <= position_x
-                count_LD = count_LD + 1;
-                if diff_x >= diff_y
-                    count_L = count_L + 1;
-                end
-                if diff_x <= diff_y
-                    count_D = count_D + 1;
-                end
-            end
-        end
-        if insight_y <= position_y
-            if insight_x >= position_x
-                count_RU = count_RU + 1;
-                if diff_x >= diff_y
-                    count_R = count_R + 1;
-                end
-                if diff_x <= diff_y
-                    count_U = count_U + 1;
-                end
-            end
-            if insight_x <= position_x
-                count_LU = count_LU + 1;
-                if diff_x >= diff_y
-                    count_L = count_L + 1;
-                end
-                if diff_x <= diff_y
-                    count_U = count_U + 1;
-                end
-            end
-        end
-    end
-    
+    people_insight = get_insight_by_direction(insight_arr, position_x, position_y);
+
+    count_LU = size(people_insight.people_LU, 1);   % 左上角
+    count_LD = size(people_insight.people_LD, 1);   % 左下角
+    count_RU = size(people_insight.people_RU, 1);   % 右上角
+    count_RD = size(people_insight.people_RD, 1);   % 右下角
+    count_U = size(people_insight.people_U, 1); % 上面45°扇形区域
+    count_D = size(people_insight.people_D, 1); % 下面45°扇形区域
+    count_L = size(people_insight.people_L, 1); % 左面45°扇形区域
+    count_R = size(people_insight.people_R, 1); % 右面45°扇形区域
+
     dense_mat = [count_LU conf.MOVE_LEFTUP;
         count_LD conf.MOVE_LEFTDOWN; count_RU conf.MOVE_RIGHTUP;count_RD conf.MOVE_RIGHTDOWN;
         count_U conf.MOVE_UP; count_D conf.MOVE_DOWN;count_L conf.MOVE_LEFT;count_R conf.MOVE_RIGHT];
@@ -185,14 +328,14 @@ if people == conf.TYPE_PEOPLE_UNFAMILIAR_2 && size(insight_arr, 1) ~= 0
         [~, position_x_target, position_y_target] = proceed_move(move_action, v, position_x, position_y);
         if plaza(position_y_target, position_x_target) == conf.TYPE_PEOPLE_EMPTY
             break;
+        else
+            move_action = conf.MOVE_STOP;
         end
     end
     
     % [count_max, index] = max([count_LU count_LD count_RU count_RD count_U count_D count_L count_R]);
     
-    if move_action ~= conf.MOVE_STOP
-        [v, position_x_target, position_y_target] = proceed_move(move_action, v, position_x, position_y);
-    end
+	[v, position_x_target, position_y_target] = proceed_move(move_action, v, position_x, position_y);
 end
 
 % 不熟悉环境行人的策略S3
@@ -240,13 +383,17 @@ if people == conf.TYPE_PEOPLE_UNFAMILIAR_3 && size(insight_arr, 1) ~= 0
         [~, position_x_target, position_y_target] = proceed_move(move_action, v, position_x, position_y);
         if plaza(position_y_target, position_x_target) == conf.TYPE_PEOPLE_EMPTY
             break;
+        else
+            move_action = conf.MOVE_STOP;
         end
     end
-    
+
     % [count_max, index] = max([count_LU count_LD count_RU count_RD count_U count_D count_L count_R]);
     
-    if move_action ~= conf.MOVE_STOP
-        [v, position_x_target, position_y_target] = proceed_move(move_action, v, position_x, position_y);
+	[v, position_x_target, position_y_target] = proceed_move(move_action, v, position_x, position_y);
+    
+    if position_x_target <= 1 || position_y_target <= 1
+        xxxxx = 10;
     end
 end
 
@@ -309,15 +456,15 @@ if people == conf.TYPE_PEOPLE_UNFAMILIAR_4 || (people == conf.TYPE_PEOPLE_UNFAMI
                 barrier_arr_sum = sum(barrier_arr);
                 i = barrier_arr_sum(1,1);
                 j = barrier_arr_sum(1,2);
-                % 到墙角后，绕着墙逆时针走
+                % 到墙角后，绕着墙向出口走
                 if i == -1 && j == -1   %左上角
                     v(position_y, position_x) = conf.MOVE_DOWN;
                 elseif i == 1 && j == -1   %右上角
                     v(position_y, position_x) = conf.MOVE_LEFT;
                 elseif i == -1 && j == 1   %左下角
-                    v(position_y, position_x) = conf.MOVE_RIGHT;
-                elseif i == 1 && j == 1   %右下角
                     v(position_y, position_x) = conf.MOVE_UP;
+                elseif i == 1 && j == 1   %右下角
+                    v(position_y, position_x) = conf.MOVE_LEFT;
                 end
             end
         end
@@ -330,11 +477,13 @@ if people == conf.TYPE_PEOPLE_UNFAMILIAR_4 || (people == conf.TYPE_PEOPLE_UNFAMI
         if plaza(position_y_target, position_x_target) == conf.TYPE_PEOPLE_EMPTY
             v=v_tmp;
             break;
-        elseif has_blocked>7
+        elseif has_blocked > 7
             position_y_target = position_y;
             position_x_target = position_x;
             break;
-        else
+        else            
+            position_x_target = position_x;
+            position_y_target = position_y;
             has_blocked = has_blocked + 1;
         end
     end

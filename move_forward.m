@@ -4,7 +4,7 @@ function [plaza,v]=move_forward(plaza,v,follow)
 conf = config();
 [L,W]=size(plaza);
 
-strategy_prior = [conf.TYPE_PEOPLE_UNFAMILIAR_4; conf.TYPE_PEOPLE_UNFAMILIAR_1;
+strategy_prior = [conf.TYPE_PEOPLE_UNFAMILIAR_4; conf.TYPE_PEOPLE_UNFAMILIAR_1; conf.TYPE_PEOPLE_FAMILIAR;
                   conf.TYPE_PEOPLE_UNFAMILIAR_2; conf.TYPE_PEOPLE_UNFAMILIAR_3];
 
 % 按照优先级移动策略

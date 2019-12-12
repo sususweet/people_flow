@@ -6,6 +6,9 @@ position_x_target = position_x;
 position_y_target = position_y;
 
 switch direction
+	case conf.MOVE_STOP
+        position_x_target = position_x;
+        position_y_target = position_y;
     case conf.MOVE_LEFT
         position_x_target = position_x - 1;
     case conf.MOVE_RIGHT

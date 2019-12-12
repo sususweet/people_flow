@@ -6,6 +6,9 @@ function [distance_mat] = get_distance_move(current_x, current_y, target_x, targ
     % j_min = 0;
     for i = -1:1
         for j = -1:1
+            if i == 0 && j == 0
+                continue;
+            end
             distance = sqrt((current_x + i - target_x)^2 + (current_y + j - target_y)^2);
             distance_mat = [distance_mat; distance i j];
             % if distance < distance_min
