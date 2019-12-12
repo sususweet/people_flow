@@ -25,7 +25,7 @@ for k=1:size(strategy_prior,1)
             x_diff = location_pre{y_ori, x_ori}(iteration, 2) - location_pre{y_ori, x_ori}(iteration - conf.max_iteration, 2);
             distance = sqrt((y_diff)^2+(x_diff)^2);
             % 如果这个人在一个区域内停留过久，则采用策略S4
-            if distance <= conf.max_iteration_r
+            if distance <= conf.max_iteration_r || abs(y_diff) <= conf.max_iteration_r || abs(x_diff) <= conf.max_iteration_r
                 promote_strategy = conf.TYPE_PEOPLE_UNFAMILIAR_4;
             end
         end
