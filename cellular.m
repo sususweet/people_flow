@@ -19,7 +19,7 @@ Dsafe=1;            % 表示换道时车至少与后面车距离多少个单位才算安全
 % VTypes=[1,2];       %道路上一共有几种最大速度不同的车辆,速度是什么
 
 %生成疏散空间
-[plaza,v,follow] = create_plaza(space_w,space_h);
+[plaza,v,follow,location_pre] = create_plaza(space_w,space_h);
 % h = show_plaza(plaza,h,per_show_time);
 [plaza,v,vmax]=new_cars(plaza,v,prospace_wc);
 [plaza,v] = dist_people(plaza,v,Ks);
@@ -27,7 +27,7 @@ Dsafe=1;            % 表示换道时车至少与后面车距离多少个单位才算安全
 h=show_plaza(plaza,h,per_show_time);
 
 for t=1:iterations
-    [plaza,v] = move_forward(plaza,v,follow);
+    [plaza,v,follow,location_pre] = move_forward(plaza,v,follow,t,location_pre);
     h=show_plaza(plaza,h,per_show_time);
     index = find(plaza == conf.TYPE_PEOPLE_UNFAMILIAR_4);
     [index_i, index_j]=ind2sub(size(plaza),index);

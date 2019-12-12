@@ -29,4 +29,7 @@ function cn = config()
 
     cn.exit_xy = [1 14];    % 空间出口位置
     cn.exit_width = 6;    % 出口的宽度
+
+    cn.max_iteration_r = 3/cn.cell_size; % 停留在一个区域的区域半径
+    cn.max_iteration = 20; % 停留在一个区域的最大迭代次数
 end

@@ -1,9 +1,10 @@
 %空间生成函数
-function [plaza,v,follow]=create_plaza(width,height)
+function [plaza,v,follow,location_pre]=create_plaza(width,height)
 	conf = config();
     plaza=zeros(height+2,width+2);
     v= conf.MOVE_NULL * zeros(height+2,width+2); 
     follow = cell(height+2,width+2);
+    location_pre = cell(height+2,width+2);
     
     % 空间的墙壁，不可达
     plaza(1:height+2,[1,2+width])=conf.TYPE_BARRIAR;   % 左右墙壁
