@@ -165,7 +165,7 @@ if people == conf.TYPE_PEOPLE_FAMILIAR
             end
             p = Na / r^2;
             
-            cost_value = 0.075 * yita ^ 2 + 0.025 * p ^ 2;
+            cost_value = 0.025 * yita ^ 2 + 0.075 * p ^ 2;
             fai_value = (abs(position_y_tmp - exit_y) + abs(position_x_tmp - exit_x)) * cost_value;
             
             cost_mat = [cost_mat; fai_value i_k j_k];

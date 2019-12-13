@@ -25,11 +25,11 @@ function cn = config()
 
     % 元胞实际大小，一个元胞为 cell_size*cell_size m^2 实际大小
     cn.cell_size = 0.4;
-    cn.sight_r = 3/cn.cell_size;  % 行人的视野半径
+    cn.sight_r = 3.0/cn.cell_size;  % 行人的视野半径
 
     cn.exit_xy = [1 14];    % 空间出口位置
     cn.exit_width = 6;    % 出口的宽度
 
-    cn.max_iteration_r = 3/cn.cell_size; % 停留在一个区域的区域半径
-    cn.max_iteration = 20; % 停留在一个区域的最大迭代次数
+    cn.max_iteration_r = 3.0/cn.cell_size; % 停留在一个区域的区域半径
+    cn.max_iteration = 80; % 停留在一个区域的最大迭代次数
 end
