@@ -1,5 +1,6 @@
 function [plaza, v, follow, has_exit, position_x_target, position_y_target] = select_strategy(plaza, v, follow, position_x, position_y, promote_strategy)
 % 根据不同策略，选择下一步的移动方向
+global sight_r;
 conf = config();
 [y_max, x_max]=size(plaza);
 has_exit = 0;
@@ -158,7 +159,7 @@ if people == conf.TYPE_PEOPLE_FAMILIAR
             % 视野范围内的总人数
             Na = size(insight_arr, 1);
             % 视野半径为1 m 时, r = 3, 半径大于等于2 m 时, 认为r = 5
-            if conf.sight_r * conf.cell_size < 2.0
+            if sight_r * conf.cell_size < 2.0
                 r = 3;
             else
                 r = 5;
@@ -196,7 +197,7 @@ end
 
 % 静态场域策略 S0
 exit_distance = sqrt((position_y - exit_y)^2+(position_x - exit_x)^2);
-if exit_distance <= conf.sight_r
+if exit_distance <= sight_r
     % 找到这个人周围8个邻域内距离出口最近的邻域，按照距离大小，选取没人的邻域进入
     [distance_mat] = get_distance_move(position_x, position_y, exit_x, exit_y);
     for i = 1:size(distance_mat,1)

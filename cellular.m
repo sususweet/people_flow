@@ -3,6 +3,7 @@ clc;
 clear;
 close all;
 conf = config();
+global sight_r;
 
 space_w = 25; % 空间的宽度
 space_h = 25; % 空间的长度
@@ -10,6 +11,7 @@ time_step_arr = [];
 
 for Ks = 0:0.05:1
     Ks = 0.4;   % 熟悉环境的行人比例
+    sight_r = 3.0/conf.cell_size;  % 行人的视野半径
 
     h = NaN;  % 图像的句柄
     per_show_time = 0.1;    %单次展示时间
