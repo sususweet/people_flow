@@ -17,13 +17,13 @@ function h = show_plaza(plaza, h, n)
     if ishandle(h)
         set(h,'CData',PLAZA);
     else    %调整展示图像大小和格式
-        %figure('position',[200 50 200 700]);
+        figure('position',[50 50 700 700]);
         clims = [conf.TYPE_BARRIAR conf.TYPE_PEOPLE_FAMILIAR];
         h=imagesc(PLAZA, clims);
         ax = gca;
         load('MyColormap','mymap')
         colormap(ax,mymap)
-        colorbar;
+        % colorbar;
         hold on;
         plot([[0:W]',[0:W]']+0.5,[0,L]+0.5,'k');
         plot([0,W]+0.5,[[0:L]',[0:L]']+0.5,'k');
