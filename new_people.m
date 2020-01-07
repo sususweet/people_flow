@@ -1,4 +1,4 @@
-function [plaza,v,vmax]=new_cars(plaza,v,probc)
+function [plaza,v,vmax]=new_people(plaza,v,probc)
     conf = config();
     [L,W]=size(plaza);
     vmax=zeros(L,W);

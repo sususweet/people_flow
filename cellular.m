@@ -9,8 +9,8 @@ space_w = 25; % 空间的宽度
 space_h = 25; % 空间的长度
 time_step_arr = [];
 
-for Ks = 0.1:0.2:1
-    % Ks = 0.4;   % 熟悉环境的行人比例
+% for Ks = 0.1:0.2:1
+    Ks = 0.4;   % 熟悉环境的行人比例
     sight_t = 3.0;
     sight_r = sight_t/conf.cell_size;  % 行人的视野半径
 
@@ -18,7 +18,7 @@ for Ks = 0.1:0.2:1
     per_show_time = 0.1;    %单次展示时间
 
     iterations=400;    % 迭代次数
-    prospace_wc=0.0;          % 人员密度
+    prospace_wc=0.3;          % 人员密度
 
     %生成疏散空间
     [plaza,v,follow,location_pre] = create_plaza(space_w,space_h);
@@ -27,7 +27,7 @@ for Ks = 0.1:0.2:1
     [plaza,v] = dist_people(plaza,v,Ks);
     % PLAZA=rot90(plaza,2);
     h=show_plaza(plaza,h,per_show_time);
-pause;
+
     time_arr=[];
     people_num_u1=[];
     people_num_u2=[];
@@ -68,7 +68,7 @@ pause;
     %     % disp(people_num);
     end
     time_step_arr = [time_step_arr, t];
-end
+% end
 
 
 % figure;
