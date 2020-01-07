@@ -23,7 +23,7 @@ for Ks = 0.1:0.2:1
     %…˙≥… Ë…¢ø’º‰
     [plaza,v,follow,location_pre] = create_plaza(space_w,space_h);
     % h = show_plaza(plaza,h,per_show_time);
-    [plaza,v,vmax]=new_cars(plaza,v,prospace_wc);
+    [plaza,v,vmax]=new_people(plaza,v,prospace_wc);
     [plaza,v] = dist_people(plaza,v,Ks);
     % PLAZA=rot90(plaza,2);
     h=show_plaza(plaza,h,per_show_time);
